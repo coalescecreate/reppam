@@ -1,4 +1,4 @@
-# Reppam - A HTML slider #
+# Reppam - An abstraction layer for Google Maps V3 #
 
 A jQuery plugin to display points on Google maps, get directions between current position and where you are now, which is the closest point. This is just an abstraction layer for Google Maps API V3. Use in conjunction with markerclusterplus for better marker control when using more markers.
 
@@ -23,7 +23,7 @@ Example
 
 	$('.reppam').reppam({
 		debug: true,
-		pagination: 'num'
+		mapsURL: '//maps.google.com/maps/api/js'
 	})
 
 ### HTML ###
@@ -163,10 +163,10 @@ Send all the coords to zoom in on a specific area of the map. Expects an object 
 
 ### Roadmap ###
 
-Option to expand bounds to show initial countryand then the nearest store to that country.
-Show info window when using method show on map - needs to have markers as a global plugin object.
-Add distance to info windows when show nearest store has been used.
-Show next closest store.
+* Option to expand bounds to show initial countryand then the nearest store to that country.
+* Show info window when using method show on map - needs to have markers as a global plugin object.
+* Add distance to info windows when show nearest store has been used.
+* Show next closest store.
 
 
 ### Changelog ###

@@ -13,13 +13,91 @@
 		<main class="main-cont">
 			<section>
 				<h1>Reppam Mapper</h1>
-				<p class="ingress">A mapping function for integration with Google Maps API.</p>
+				<p class="ingress">A mapping function for integration with Google Maps API. To be able to use the API key the domain needs to be whitelisted. Please create a new key if you're not a member of the Young Skilled team</p>
 			</section>
 			<section>
 				<h3>Default</h3>
 				<p>Standard map.</p>
-				<pre>$('.reppam').reppam();</pre>
+				<pre>
+$('.reppam').reppam({
+	countriesUrl: '../json/countries.json',
+	markersUrl: '../json/sample.json',
+	defaultCountry: 'NO',
+	mapOptions: {
+		backgroundColor: '#FFFBF3',
+		styles: [{
+			"elementType": "geometry",
+			"stylers": [{"invert_lightness": true}, {"saturation": -100}, {"lightness": 31}]
+		}, {
+			"featureType": "water",
+			"elementType": "geometry",
+			"stylers": [{"lightness": 56}]
+		}, {
+			"featureType": "water",
+			"elementType": "labels",
+			"stylers": [{"lightness": -42}]
+		}]
+	},
+	multipleMarker: {
+		url: '../images/map-icon-multiple.png',
+		width: 46,
+		height: 62,
+		anchorIcon: [62, 23],
+		textColor: 'transparent'
+	},
+	singleMarker: {
+		url: '../images/map-icon-single.png',
+		width: 46,
+		height: 62
+	},
+	personMarker: {
+		url: '../images/map-icon-person.png',
+		width: 46,
+		height: 62
+	},
+	strokeColor: '#FF7580'
+});
+				</pre>
+				<a href="#" id="locate-me" class="btn">Get my location</a>
+				<a href="#" id="nearest" class="btn">Find Nearest Store</a>
+				<a href="#" class="coords btn" data-coords='{"lat":30,"lng":20,"zoom":5}'>Destination 1</a>
+				<a href="#" class="coords btn" data-coords='{"lat":50,"lng":60,"zoom":13}'>Destination 2</a>
 				<div class="reppam"></div>
+				<h3>Example store list</h3>
+				<ul class="inline-list">
+					<li id="582">
+						<h4>Norwegian Outlet Vestby</h4>
+						<p>
+							Vestbyveien 155, Vestby<br />
+							Ph: +47 40 00 36 40<br />
+							<a href="mailto:vestby@moodsofnorway.com">vestby&#64;moodsofnorway.com</a>
+						</p>
+						<p><strong>Åpningstider:</strong><br />
+							Mon-Fri: 10:00-20:00<br />
+							Thur: 10:00-21:00<br />
+							Sat: 10:00-18:00
+						</p>
+						<a href="#" class="show-on-map btn">Show on map</a>
+					</li><li id="617">
+						<h4>Moule - Canada</h4>
+						<p>
+							2321 S. Granville St.<br />
+							Vancouver BC V3E 3H5<br />
+							604-732-4066<br />
+							Canada
+						</p>
+						<a href="#" class="show-on-map btn">Show on map</a>
+					</li><li id="571">
+						<h4>W Hotels - Hollywood</h4>
+						<p>
+							6250 Hollywood Blvd.<br />
+							Hollywood, CA 90028<br />
+							212-941-6300<br />
+							USA
+						</p>
+						<a href="#" class="show-on-map btn">Show on map</a>
+					</li>
+				</ul>
 			</section>
 		</main>
 		<footer class="main-cont">
@@ -40,11 +118,86 @@
 			</a>
 		</footer>
 		<script type="text/javascript" src="/js/jquery.js"></script>
+		<script type="text/javascript" src="/js/markerclusterer.js"></script>
 		<script type="text/javascript" src="/js/reppam.js"></script>
 		<script>
 			$(document).ready(function() {
-				//Responsive redils
-				$('.reppam').reppam();
+				var gridShowing;
+
+
+				//Styles can be set here:
+				$('.reppam').reppam({
+					debug: true,
+					countriesUrl: '../json/countries.json',
+					markersUrl: '../json/sample.json',
+					defaultCountry: 'NO',
+					mapOptions: {
+						backgroundColor: '#FFFBF3',
+						styles: [{
+							"elementType": "geometry",
+							"stylers": [{"invert_lightness": true}, {"saturation": -100}, {"lightness": 31}]
+						}, {
+							"featureType": "water",
+							"elementType": "geometry",
+							"stylers": [{"lightness": 56}]
+						}, {
+							"featureType": "water",
+							"elementType": "labels",
+							"stylers": [{"lightness": -42}]
+						}]
+					},
+					multipleMarker: {
+						url: '../images/map-icon-multiple.png',
+						width: 46,
+						height: 62,
+						anchorIcon: [62, 23],
+						textColor: 'transparent'
+					},
+					singleMarker: {
+						url: '../images/map-icon-single.png',
+						width: 46,
+						height: 62
+					},
+					personMarker: {
+						url: '../images/map-icon-person.png',
+						width: 46,
+						height: 62
+					},
+					strokeColor: '#FF7580'
+				});
+
+				$('.show-on-map').on('click', function(e){
+					e.preventDefault();
+
+					var $this = $(this),
+						parentId = $(this).parent().attr('id');
+
+					$('.reppam').reppam('showOnMap', {
+						id: parentId,
+						callback: function(success) {
+							if(!success) {
+								$this.addClass('error');
+								$this.after('<p class="error">' + err.msg + '</p>');
+							}
+						}
+					});
+				});
+
+				var callbackReturn = function(success) {
+					console.log('var success', success);
+				}
+
+				$('.coords').on('click', function(e) {
+					e.preventDefault();
+
+					var $this = $(this)
+						data = $this.data('coords');
+
+					data.callback = callbackReturn;
+					$('.reppam').reppam('showCoords', data);
+
+				});
+
 
 				//Hide/display grid
 				$(window).on('keypress', function(e){

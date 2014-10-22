@@ -52,33 +52,17 @@ a{color:#333;text-decoration:none}
 img{display:block;max-width:100%;height:auto}
 iframe{width:100%}
 label{cursor:pointer}
+.loading:after{content:"..."}
+.error{color:red}
 .main-cont{width:1170px;margin:0 auto;max-width:92%}
+.btn{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;border:1px solid #333;margin:10px 10px 10px 0;background-color:transparent;color:#333;display:inline-block;padding:0 10px;height:30px;line-height:28px}
+.btn:hover{background-color:#333;color:#F9FEF9}
 section{margin-top:50px}
 .ingress{width:65.81197%}
 .signature{width:48.71795%;margin:250px auto 0;text-align:center;display:block;border-top:1px solid #ccc}
 .signature svg{padding-top:30px}
-.redils-multislide .super-slide .slides{padding:10px}
-.pagination{text-align:center;position:relative;top:-25px;z-index:5}
-.pagination a{width:15px;height:15px;border-radius:50%;background-color:#fff;display:inline-block;margin:0 5px}
-.pagination a.selected{background-color:#333}
-.redils-cont{width:1170px;max-width:100%;position:relative}
-.redils{overflow:hidden;width:100%;height:100%}
-.redils .slide-cont,.redils .slides{height:100%}
-.redils-controls .arrow-area{position:absolute;height:100%;width:20%;top:0;z-index:10;cursor:pointer}
-.redils-controls .arrow-area-right{right:0}
-table.redils-controls{width:100%;height:100%;position:absolute;top:0;left:0}
-table.redils-controls .arrow-area-left{text-align:left}
-table.redils-controls td{cursor:pointer;position:relative;padding:0;text-align:right;display:table-cell;vertical-align:middle;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
-table.redils-controls td.center-cell{width:10%;z-index:-1}
-.redils-fader{height:600px}
-.redils-fader .redils{z-index:5}
-.redils-fader .slides{width:100%;height:100%}
-.redils-default{height:660px}
-.redils-default .slides{float:left}
-.redils-responsive{height:600px}
-.redils-responsive .slides{float:left}
-.redils-responsive .slides img{width:auto;height:100%}
-.redils-responsive .redils.disabled .slides{margin:0 auto;opacity:1;float:none}
-.redils-multislide{height:240px}
-.redils-multislide .slides{display:inline-block;vertical-align:top}
-.redils-multislide .super-slide{float:left;text-align:center}
+.inline-list{margin:0;padding:0;list-style:none}
+.inline-list li{display:inline-block;vertical-align:top;width:31.62393%;margin-left:2.5641%}
+.inline-list li:nth-child(3n-2){margin-left:0}
+.reppam{width:100%;height:500px}
+.reppam img{max-width:none}

@@ -1,6 +1,6 @@
 {
   "name": "ys-reppam",
-  "version": "1.6.4",
+  "version": "0.1.0",
   "main": "dist/reppam.js",
   "authors": [
     "Richard Herries <richard@youngskilled.com>"

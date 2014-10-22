@@ -1,6 +1,6 @@
 {
   "name": "ys-reppam",
-  "version": "1.6.4",
+  "version": "0.0.1",
   "description": "Reppam a mapping function used in conjuction with google maps API",
   "main": "dist/reppam.js",
   "homepage": "http://youngskilled.com",
