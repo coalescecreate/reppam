@@ -184,5 +184,5 @@ Initial commit
 
 ### Contact ###
 
-This is a small plugin by Young Skilled.
+This is a small plugin by [Young/Skilled](http://youngskilled.com).   
 Contact [richard](mailto:richard@youngskilled) for more details about this plugin.
