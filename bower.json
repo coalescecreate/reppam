@@ -1,0 +1,20 @@
+{
+  "name": "ys-reppam",
+  "version": "1.6.4",
+  "main": "dist/reppam.js",
+  "authors": [
+    "Richard Herries <richard@youngskilled.com>"
+  ],
+  "description": "Reppam a mapping function used in conjuction with google maps API",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "jquery": "1.11",
+    "normalize-scss": "~3.0.1",
+    "google-marker-clusterer-plus": "2.1.2"
+  }
+}
