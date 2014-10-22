@@ -5,16 +5,25 @@
   "authors": [
     "Richard Herries <richard@youngskilled.com>"
   ],
-  "description": "Reppam a mapping function used in conjuction with google maps API",
+  "description": "A jquery plugin for abstracting away Google Maps API",
   "license": "MIT",
   "ignore": [
     "**/.*",
     "node_modules",
-    "bower_components"
+    "bower_components",
+    "test",
+    "tests"
   ],
   "dependencies": {
     "jquery": "1.11",
     "normalize-scss": "~3.0.1",
     "google-marker-clusterer-plus": "2.1.2"
-  }
+  },
+  "homepage": "https://github.com/youngskilled/js-reppam",
+  "keywords": [
+    "jquery",
+    "google",
+    "maps",
+    "youngskilled"
+  ]
 }
