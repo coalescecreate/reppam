@@ -52,6 +52,15 @@ Enter API key and other important information for the url parameters. [More info
 
 	$(selector).redils({countriesUrl: 'countries.json'});
 
+#### mapOptions ####
+
+*Default* `{}`   
+*Expects* `object`
+
+Options relating to the instantiation of google maps. Common usage includes [styles from the google maps styling wizard](http://gmaps-samples-v3.googlecode.com/svn/trunk/styledmaps/wizard/index.html) and background color to match the background color of the map. Optionally a no scroll if there is content after the map that the user needs to be able to get to. [All options for the mapOptions object are here](https://developers.google.com/maps/documentation/javascript/reference#MapOptions)
+
+	$(selector).redils({mapOptions: {}});
+
 #### countriesUrl ####
 
 *Default* `'countries.json'`   
@@ -84,7 +93,7 @@ If there are no markers to display in the country that the user comes from. This
 *Default* `{}`   
 *Expects* `object`
 
-An object describing the icon. This object is specific to markerclusterplus and that library needs to be loaded for this to be valid. [More information regarding specific values for the icon is here.](http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/docs/reference.html)
+An object describing the icon. This object is specific to markerclusterplus and that library needs to be loaded for this to be valid. [More information regarding specific values for the icon is here.](http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/docs/reference.html#ClusterIconStyle)
 
 	$(selector).redils({multipleMarker: {}});
 
@@ -93,7 +102,7 @@ An object describing the icon. This object is specific to markerclusterplus and 
 *Default* `{}`   
 *Expects* `object`
 
-An object describing the icon. This object is specific to google maps Marker method for the icon property. [More information regarding specific values for the icon is here.](https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions)
+An object describing the icon. This object is specific to google maps Marker method for the icon property. [More information regarding specific values for the icon is here.](https://developers.google.com/maps/documentation/javascript/reference#Icon)
 
 	$(selector).redils({singleMarker: {}});
 
@@ -102,7 +111,7 @@ An object describing the icon. This object is specific to google maps Marker met
 *Default* `{}`   
 *Expects* `object`
 
-personMarker is specifically used to show the current location of the user. An object describing the icon. This object is specific to google maps Marker method for the icon property. [More information regarding specific values for the icon is here.](https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions)
+personMarker is specifically used to show the current location of the user. An object describing the icon. This object is specific to google maps Marker method for the icon property. [More information regarding specific values for the icon is here.](https://developers.google.com/maps/documentation/javascript/reference#Icon)
 
 	$(selector).redils({singleMarker: {}});
 
@@ -170,6 +179,9 @@ Send all the coords to zoom in on a specific area of the map. Expects an object 
 
 
 ### Changelog ###
+
+**Version 0.2**  
+Updates for better integration. Still needs documentation on some of the newer features.
 
 **Version 0.1**  
 Initial commit

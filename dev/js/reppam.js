@@ -39,48 +39,24 @@
 
 		},
 		getData: function() {
-			var $this = this,
-				loaded = [];
-
-			$this.on('markersLoaded.reppam countriesLoaded.reppam', function(e, loadedItem) {
-				loaded.push(loadedItem);
-				if(loaded.length === 2) priv.renderMap.apply($this);
-			});
+			var $this = this;
 
 			//Get marker information
 			$.ajax({
-				url: $this.set.markersUrl,
+				url: $this.set.mapData,
 				type: 'GET',
 				dataType: 'JSON',
 				success: function(data) {
-					$this.set.markersData = data;
-					$this.data('markersData', data);
-					$this.trigger('markersLoaded.reppam', 'markers');
+					$this.set.mapData = data;
+					$this.data('mapData', data);
+					priv.renderMap.apply($this);
 				},
 				error: function(msg) {
 					//essential data
-					if($this.set.debug) console.log('Markers data has failed to load, message: ' + msg);
+					if($this.set.debug) console.log('Markers data has failed to load, message: ', msg);
 				}
 			});
 
-			//Get initial zoom area based on GEO_IP
-			$.ajax({
-				url: $this.set.countriesUrl,
-				type: 'GET',
-				dataType: 'JSON',
-				success: function(data) {
-					$this.set.countriesData = data;
-					$this.trigger('countriesLoaded.reppam', 'countries');
-					$this.data('countriesData', data);
-				},
-				error: function(msg) {
-					//Continue loading plugin, non-essential data.
-					$this.set.countriesData = false;
-					$this.trigger('countriesLoaded.reppam', 'countries');
-					if($this.set.debug) console.log('Countries failed to load, message: ' + msg);
-					$this.data('countriesData', data);
-				}
-			});
 
 		},
 		renderMap: function() {
@@ -90,15 +66,15 @@
 				neObj,
 				bounds;
 			
-			if($this.set.countriesData) {
+			if($this.set.mapData.countries) {
 				//Use GEO_IP data to set right country.
-				zoomLocation = $this.set.countriesData[$this.set.markersData.currentLocation[0]];
+				zoomLocation = $this.set.mapData.countries[$this.set.mapData.currentLocation[0]];
 
 				if($this.set.defaultCountry !== false) {
 					//Check that there are markers in that country.
-					if(!priv.withinBounds(zoomLocation.sw, zoomLocation.ne, $this.set.markersData.locations)) {
+					if(!priv.withinBounds(zoomLocation.sw, zoomLocation.ne, $this.set.mapData.locations)) {
 						//Revert to default country if there are no markers
-						zoomLocation = $this.set.countriesData[$this.set.defaultCountry];
+						zoomLocation = $this.set.mapData.countries[$this.set.defaultCountry];
 						//alternatively expand bounds...
 					}
 				}
@@ -108,12 +84,15 @@
 
 				//Set the bounds using googles functions.
 				bounds = new google.maps.LatLngBounds(swObj, neObj);
+			} else {
+				$this.set.mapOptions.center = new google.maps.LatLng(0, 0);
+				$this.set.mapOptions.zoom = 2;
 			}
 			
 
 			//Initiate map at right location.
 			$this.set.map = new google.maps.Map($this[0], $this.set.mapOptions);
-			if($this.set.countriesData) $this.set.map.fitBounds(bounds);
+			if($this.set.mapData.countries) $this.set.map.fitBounds(bounds);
 
 			$this.data('map', $this.set.map);
 
@@ -163,7 +142,7 @@
 					$nearest.removeClass('loading').addClass('loaded');
 
 					//Set bounds and zoom.
-					closest = priv.findNearest(myPosition, $this.set.markersData.locations);
+					closest = priv.findNearest(myPosition, $this.set.mapData.locations);
 					currentPos = new google.maps.LatLng(myPosition.lat, myPosition.lng);
 					storePos = new google.maps.LatLng(closest[0].data.latitude, closest[0].data.longitude);
 
@@ -209,7 +188,6 @@
 				$this.set.map.setCenter($this.set.center);
 				$this.set.map.setZoom($this.set.zoom);
 			});
-				
 
 			//Directions to closest store.
 			//On ice api allows only 2,500 req/day... Might still be ok.
@@ -218,16 +196,26 @@
 		addMe: function(myPosition) {
 			var $this = this,
 				myMarker,
+				personMarker = $this.set.personMarker,
+				markerOptions = {},
 				pos;
 
 			//Remove potential marker already added
 			if($this.set.current.position) $this.set.current.position.setMap(null);
 
 			pos = new google.maps.LatLng(myPosition.lat, myPosition.lng);
-			myMarker = new google.maps.Marker({
-				position: pos,
-				icon: $this.set.personMarker
-			});
+
+			markerOptions.position = pos;
+			if(personMarker !== false) {
+				markerOptions.icon = {};
+				//Translate from arrays to google classes
+				if(personMarker.url) markerOptions.icon.url = personMarker.url;
+				if(personMarker.anchor) markerOptions.icon.anchor = new google.maps.Point(personMarker.anchor[0], personMarker.anchor[1]);
+				if(personMarker.origin) markerOptions.icon.origin = new google.maps.Point(personMarker.origin[0], personMarker.origin[1]);
+				if(personMarker.size) markerOptions.icon.size = new google.maps.Size(personMarker.size[0], personMarker.size[1]);
+				if(personMarker.scaledSize) markerOptions.icon.scaledSize = new google.maps.Size(personMarker.scaledSize[0], personMarker.scaledSize[1]);
+			}
+			myMarker = new google.maps.Marker(markerOptions);
 			
 			//Adds a "you are here" marker.
 			myMarker.setMap($this.set.map);
@@ -247,11 +235,15 @@
 		},
 		addMarkers: function() {
 			var $this = this,
-				locations = $this.set.markersData.locations,
+				locations = $this.set.mapData.locations,
+				singleMarker = $this.set.singleMarker,
+				multipleMarker = $this.set.multipleMarker,
 				latLng,
 				position,
 				marker,
 				markers = [],
+				markerOptions = {},
+				multipleMarkerOptions = {},
 				markerCluster;
 
 			//Parse marker data.
@@ -262,13 +254,23 @@
 
 				latLng = new google.maps.LatLng(position.latitude, position.longitude);
 				//https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions
-				marker = new google.maps.Marker({
+
+				markerOptions = {
 					id: markerData,
 					content: locations[markerData].address,
 					position: latLng,
-					title: locations[markerData].name,
-					icon: $this.set.singleMarker
-				});
+					title: locations[markerData].name
+				};
+				if(singleMarker !== false) {
+					markerOptions.icon = {};
+					//Translate from arrays to google classes
+					if(singleMarker.url) markerOptions.icon.url = singleMarker.url;
+					if(singleMarker.anchor) markerOptions.icon.anchor = new google.maps.Point(singleMarker.anchor[0], singleMarker.anchor[1]);
+					if(singleMarker.origin) markerOptions.icon.origin = new google.maps.Point(singleMarker.origin[0], singleMarker.origin[1]);
+					if(singleMarker.size) markerOptions.icon.size = new google.maps.Size(singleMarker.size[0], singleMarker.size[1]);
+					if(singleMarker.scaledSize) markerOptions.icon.scaledSize = new google.maps.Size(singleMarker.scaledSize[0], singleMarker.scaledSize[1]);
+				}
+				marker = new google.maps.Marker(markerOptions);
 
 				//On each marker have a click event so that you zoom in to the correct level.
 				//No event delegation available as these aren't dom elements.
@@ -297,13 +299,32 @@
 			//If MarkerClusterer is defined and loaded on the page use that. 
 			// http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/docs/reference.html
 			//Otherwise use google markers.
-			if(MarkerClusterer !== undefined) {
+			if(typeof MarkerClusterer !== 'undefined') {
 				markerCluster = new MarkerClusterer($this.set.map, markers, {
 					maxZoom: $this.set.zoomedIn - 1
 				});
-				markerCluster.setStyles([
-					$this.set.multipleMarker
-				]);
+				if(multipleMarker !== false) {
+
+					multipleMarkerOptions = {};
+					//Icon values - transpose properties so that they are the same as the other markers
+					if(multipleMarker.url) multipleMarkerOptions.url = multipleMarker.url;
+					if(multipleMarker.anchor) multipleMarkerOptions.anchorIcon = [multipleMarker.anchor[1], multipleMarker.anchor[0]];
+					if(multipleMarker.origin) multipleMarkerOptions.backgroundPosition = '-' + multipleMarker.origin[0] + 'px -' + multipleMarker.origin[1] + 'px';
+					if(multipleMarker.size) multipleMarkerOptions.width = multipleMarker.size[0];
+					if(multipleMarker.size) multipleMarkerOptions.height = multipleMarker.size[1];
+					//Text values - same as markerclustererplus - http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/docs/reference.html#ClusterIconStyle
+					if(multipleMarker.anchorText) multipleMarkerOptions.anchorText = multipleMarker.anchorText;
+					if(multipleMarker.fontFamily) multipleMarkerOptions.fontFamily = multipleMarker.fontFamily;
+					if(multipleMarker.fontStyle) multipleMarkerOptions.fontStyle = multipleMarker.fontStyle;
+					if(multipleMarker.fontWeight) multipleMarkerOptions.fontWeight = multipleMarker.fontWeight;
+					if(multipleMarker.textColor) multipleMarkerOptions.textColor = multipleMarker.textColor;
+					if(multipleMarker.textDecoration) multipleMarkerOptions.textDecoration = multipleMarker.textDecoration;
+					if(multipleMarker.textSize) multipleMarkerOptions.textSize = multipleMarker.textSize;
+
+					markerCluster.setStyles([
+						multipleMarkerOptions
+					]);
+				}
 			} else {
 				for (var i = 0; i < markers.length; i++) {
 					markers[i].setMap($this.set.map);
@@ -321,12 +342,12 @@
 			//Show specific marker on map.
 			var $this = this,
 				latLng,
-				currentMarker = $this.set.markersData.locations[location];
+				currentMarker = $this.set.mapData.locations[location];
 
 			callback = callback || function() {};
 
 			if(currentMarker.latitude === '' || currentMarker.longitude === '') {
-				if($this.set.debug) console.log('This location has no coordinates.')
+				if($this.set.debug) console.log('This location has no coordinates.');
 				return callback({'success': false});
 			}
 			latLng = new google.maps.LatLng(currentMarker.latitude, currentMarker.longitude);
@@ -509,13 +530,12 @@
 		debug: false,
 		mapsURL: '//maps.google.com/maps/api/js',
 		urlParams: {},
-		countriesUrl: 'countries.json',
 		defaultCountry: false,
-		markersUrl: 'markers.json',
+		mapData: 'map-data.json',
 		mapOptions: {},
-		multipleMarker: {},
-		singleMarker: {},
-		personMarker: {},
+		multipleMarker: false,
+		singleMarker: false,
+		personMarker: false,
 		zoomedIn: 14,
 		strokeColor: '#000000'
 	};

@@ -20,6 +20,7 @@
 				<p>Standard map.</p>
 				<pre>
 $('.reppam').reppam({
+	debug: true,
 	countriesUrl: '../json/countries.json',
 	markersUrl: '../json/sample.json',
 	defaultCountry: 'NO',
@@ -40,20 +41,17 @@ $('.reppam').reppam({
 	},
 	multipleMarker: {
 		url: '../images/map-icon-multiple.png',
-		width: 46,
-		height: 62,
-		anchorIcon: [62, 23],
+		size: [46, 62],
+		anchor: [23, 62],
 		textColor: 'transparent'
 	},
 	singleMarker: {
 		url: '../images/map-icon-single.png',
-		width: 46,
-		height: 62
+		size: [46, 62],
 	},
 	personMarker: {
 		url: '../images/map-icon-person.png',
-		width: 46,
-		height: 62
+		size: [46, 62],
 	},
 	strokeColor: '#FF7580'
 });
@@ -128,8 +126,7 @@ $('.reppam').reppam({
 				//Styles can be set here:
 				$('.reppam').reppam({
 					debug: true,
-					countriesUrl: '../json/countries.json',
-					markersUrl: '../json/sample.json',
+					mapData: '../json/sample.json',
 					defaultCountry: 'NO',
 					mapOptions: {
 						backgroundColor: '#FFFBF3',
@@ -148,20 +145,17 @@ $('.reppam').reppam({
 					},
 					multipleMarker: {
 						url: '../images/map-icon-multiple.png',
-						width: 46,
-						height: 62,
-						anchorIcon: [62, 23],
+						size: [46, 62],
+						anchor: [23, 62],
 						textColor: 'transparent'
 					},
 					singleMarker: {
 						url: '../images/map-icon-single.png',
-						width: 46,
-						height: 62
+						size: [46, 62],
 					},
 					personMarker: {
 						url: '../images/map-icon-person.png',
-						width: 46,
-						height: 62
+						size: [46, 62],
 					},
 					strokeColor: '#FF7580'
 				});
