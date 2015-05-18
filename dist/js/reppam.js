@@ -185,8 +185,16 @@
 			});
 
 			$(window).on('resize', function() {
-				$this.set.map.setCenter($this.set.center);
-				$this.set.map.setZoom($this.set.zoom);
+				//update the position
+				priv.logPosition.apply($this);
+				
+				//center the map on resize if any selected marker exist
+				if($this.set.current.infoWindow) {
+					$this.set.map.setCenter($this.set.current.infoWindow.position);
+					$this.set.map.setZoom($this.set.zoom);
+				}
+
+				google.maps.event.trigger($this.set.map, 'resize');
 			});
 
 			//Directions to closest store.
