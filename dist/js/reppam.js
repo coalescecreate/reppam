@@ -56,8 +56,6 @@
 					if($this.set.debug) console.log('Markers data has failed to load, message: ', msg);
 				}
 			});
-
-
 		},
 		renderMap: function() {
 			var $this = this,
@@ -65,7 +63,7 @@
 				swObj,
 				neObj,
 				bounds;
-			
+
 			if($this.set.mapData.countries) {
 				//Use GEO_IP data to set right country.
 				zoomLocation = $this.set.mapData.countries[$this.set.mapData.currentLocation[0]];
@@ -88,7 +86,7 @@
 				$this.set.mapOptions.center = new google.maps.LatLng(0, 0);
 				$this.set.mapOptions.zoom = 2;
 			}
-			
+
 
 			//Initiate map at right location.
 			$this.set.map = new google.maps.Map($this[0], $this.set.mapOptions);
@@ -181,13 +179,13 @@
 					priv.logPosition.apply($this);
 
 				});
-				
+
 			});
 
 			$(window).on('resize', function() {
 				//update the position
 				priv.logPosition.apply($this);
-				
+
 				//center the map on resize if any selected marker exist
 				if($this.set.current.infoWindow) {
 					$this.set.map.setCenter($this.set.current.infoWindow.position);
@@ -224,7 +222,7 @@
 				if(personMarker.scaledSize) markerOptions.icon.scaledSize = new google.maps.Size(personMarker.scaledSize[0], personMarker.scaledSize[1]);
 			}
 			myMarker = new google.maps.Marker(markerOptions);
-			
+
 			//Adds a "you are here" marker.
 			myMarker.setMap($this.set.map);
 			$this.set.map.setCenter(pos);
@@ -257,12 +255,16 @@
 			//Parse marker data.
 			for(var markerData in locations) {
 				position = locations[markerData];
-				
-				if(position.latitude === '' || position.longitude === '') continue;
 
-				latLng = new google.maps.LatLng(position.latitude, position.longitude);
+				latLng = priv.parseLatLong.call($this, position.latitude, position.longitude, markerData);
+				if(!latLng) {
+					if($this.set.debug) {
+						console.log('There was a problem with marker', markerData);
+					}
+					continue;
+				}
+
 				//https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions
-
 				markerOptions = {
 					id: markerData,
 					content: locations[markerData].address,
@@ -286,7 +288,7 @@
 					var info = new google.maps.InfoWindow({
 							content: this.content
 						});
-					
+
 					if($this.set.current.infoWindow) $this.set.current.infoWindow.close();
 
 					//Only set zoom if zooming in (not out) and marker has already been clicked once.
@@ -304,7 +306,7 @@
 				markers.push(marker);
 			}
 
-			//If MarkerClusterer is defined and loaded on the page use that. 
+			//If MarkerClusterer is defined and loaded on the page use that.
 			// http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/docs/reference.html
 			//Otherwise use google markers.
 			if(typeof MarkerClusterer !== 'undefined') {
@@ -387,7 +389,7 @@
 
 			if(navigator.geolocation) {
 				navigator.geolocation.getCurrentPosition(function(position) {
-					
+
 					myPosition = {lat: position.coords.latitude, lng: position.coords.longitude};
 					if(typeof callback === 'function') return callback(myPosition);
 
@@ -401,7 +403,7 @@
 
 		},
 		withinBounds: function(sw, ne, locations) {
-			//Returns if marker is found within bounds given. 
+			//Returns if marker is found within bounds given.
 			//Requires: sw:{lat:(int),lng(int)}, ne:{lat:(int),lng:(int)}, marker object
 			// +  ne
 			// sw  +
@@ -414,7 +416,7 @@
 			for(markerData in locations) {
 				inLat = false;
 				position = locations[markerData];
-				
+
 				if(position.latitude > sw.lat && position.latitude < ne.lat) inLat = true;
 				if(inLat) {
 					if(position.longitude > sw.lng && position.longitude < ne.lng) {
@@ -446,7 +448,7 @@
 				};
 				counter++;
 			}
-			
+
 			//Order stores in ascending order of closest to furtherst away.
 			closest.sort(function(a, b) {
 				return a.distance - b.distance;
@@ -468,6 +470,21 @@
 				d = R * c;
 
 			return Math.round(d);
+		},
+
+		parseLatLong: function(lat, long, markerData) {
+			var $this = this;
+			var latitude = parseFloat(lat);
+			var longitude = parseFloat(long);
+			console.log($this);
+			if(isNaN(latitude) || isNaN(longitude)) {
+				if($this.set.debug) {
+					console.log('There was a problem with marker →', markerData, lat, long);
+				}
+				return false;
+			} else {
+				return new google.maps.LatLng(latitude, longitude);
+			}
 		}
 	};
 
@@ -475,7 +492,7 @@
 		init: function(options) {
 
 			return this.each(function() {
-				
+
 				var $this = $(this),
 					objectData = $this.data();
 
@@ -508,11 +525,11 @@
 				priv.moveToCoords.apply($this, [options]);
 				$this.data($this.set);
 
-			});	
+			});
 
 		},
 		update: function(options) {
-			
+
 			return this.each(function() {
 				var $this = $(this);
 
