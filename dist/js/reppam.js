@@ -41,21 +41,25 @@
 		getData: function() {
 			var $this = this;
 
-			//Get marker information
-			$.ajax({
-				url: $this.set.mapData,
-				type: 'GET',
-				dataType: 'JSON',
-				success: function(data) {
-					$this.set.mapData = data;
-					$this.data('mapData', data);
-					priv.renderMap.apply($this);
-				},
-				error: function(msg) {
-					//essential data
-					if($this.set.debug) console.log('Markers data has failed to load, message: ', msg);
-				}
-			});
+			if(typeof $this.set.mapData === 'object') {
+				priv.renderMap.apply($this);
+			} else {
+				//Get marker information
+				$.ajax({
+					url: $this.set.mapData,
+					type: 'GET',
+					dataType: 'JSON',
+					success: function(data) {
+						$this.set.mapData = data;
+						$this.data('mapData', data);
+						priv.renderMap.apply($this);
+					},
+					error: function(msg) {
+						//essential data
+						if($this.set.debug) console.log('Map data has failed to load, message: ', msg);
+					}
+				});
+			}
 
 
 		},
@@ -65,8 +69,13 @@
 				swObj,
 				neObj,
 				bounds;
-			
-			if($this.set.mapData.countries) {
+
+			if($this.set.startPosition !== false) {
+
+				$this.set.mapOptions.center = new google.maps.LatLng($this.set.startPosition.lat, $this.set.startPosition.lng);
+				$this.set.mapOptions.zoom = $this.set.startPosition.zoom;
+
+			} else if($this.set.mapData.countries) {
 				//Use GEO_IP data to set right country.
 				zoomLocation = $this.set.mapData.countries[$this.set.mapData.currentLocation[0]];
 
@@ -92,11 +101,14 @@
 
 			//Initiate map at right location.
 			$this.set.map = new google.maps.Map($this[0], $this.set.mapOptions);
-			if($this.set.mapData.countries) $this.set.map.fitBounds(bounds);
-
+			if($this.set.mapData.countries && $this.set.startPosition === false) $this.set.map.fitBounds(bounds);
 			$this.data('map', $this.set.map);
 
-			priv.logPosition.apply($this);
+			google.maps.event.addListener($this.set.map, 'tilesloaded', function() {
+				//Moved with event listener triggered too early
+				//Saves every time new tiles are loaded in.
+				priv.logPosition.apply($this);
+			});
 
 			priv.enableEvents.apply($this);
 			priv.addMarkers.apply($this);
@@ -537,6 +549,7 @@
 		singleMarker: false,
 		personMarker: false,
 		zoomedIn: 14,
+		startPosition: false,
 		strokeColor: '#000000'
 	};
 

@@ -61,23 +61,37 @@ Options relating to the instantiation of google maps. Common usage includes [sty
 
 	$(selector).redils({mapOptions: {}});
 
-#### countriesUrl ####
+#### mapData ####
 
-*Default* `'countries.json'`   
-*Expects* `string`
+*Default* `'map-data.json'`   
+*Expects* `string or object`
 
-Relative link to a json file containing country bounds so that map can be focused on the country your IP originates from. This is a method of caching for Google's geocoder. All values come from there.
+Relative link to a json file containing the following. isoCode is the two letter version i.e. Sweden is SE
+	
+	{
+		currentLocation: [isoCode, country-name],
+		locations: {
+			id: {
+				name: string,
+				address: html,
+				latitude: integer
+				longitude: integer
+			},
+			id ...
+		},
+		countries: {
+			isoCode: {
+				id: isoCode,
+				country: string,
+				sw: {lat: integer,lng: integer},
+				ne: {lat: integer,lng: integer}
+			}
+		}
+	}
 
-	$(selector).redils({countriesUrl: 'countries.json'});
+Countries are so that map can be focused on the country your IP originates from. This is a method of caching for Google's geocoder. All values come from there. For a faster more compact version of this plugin the object data can be added directly to this property instead of being ajaxed in. Especially useful for maps with only a couple of markers.
 
-#### markersUrl ####
-
-*Default* `'markers.json'`   
-*Expects* `string`
-
-Relative link to a json file containing information about all the markers. An id, name, latitude, longitude and content are used to show markers on the map. This also has an array for current location.
-
-	$(selector).redils({countriesUrl: 'countries.json'});
+	$(selector).redils({mapData: 'map-data.json'});
 
 #### defaultCountry ####
 
@@ -88,32 +102,41 @@ If there are no markers to display in the country that the user comes from. This
 
 	$(selector).redils({countriesUrl: 'countries.json'});
 
+#### startPosition ####
+
+*Default* `false`   
+*Expects* `false or object`
+
+This will override any other automatic actions. If the map is to be focussed on a particular spot no matter the user. Object uses three properties. Zoom an integer between 3-21, lat an integer between -90 and 90, lng an integer between -90 and 90.
+
+	$(selector).redils({startPosition: false});
+
 #### multipleMarker ####
 
-*Default* `{}`   
-*Expects* `object`
+*Default* `false`   
+*Expects* `false, object`
 
-An object describing the icon. This object is specific to markerclusterplus and that library needs to be loaded for this to be valid. [More information regarding specific values for the icon is here.](http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/docs/reference.html#ClusterIconStyle)
+An object describing the icon. [More information regarding this is further down the page.](#icons)
 
-	$(selector).redils({multipleMarker: {}});
+	$(selector).redils({multipleMarker: false});
 
 #### singleMarker ####
 
-*Default* `{}`   
-*Expects* `object`
+*Default* `false`   
+*Expects* `false, object`
 
-An object describing the icon. This object is specific to google maps Marker method for the icon property. [More information regarding specific values for the icon is here.](https://developers.google.com/maps/documentation/javascript/reference#Icon)
+An object describing the icon. [More information regarding this is further down the page.](#icons)
 
-	$(selector).redils({singleMarker: {}});
+	$(selector).redils({singleMarker: false});
 
 #### personMarker ####
 
-*Default* `{}`   
-*Expects* `object`
+*Default* `false`   
+*Expects* `false, object`
 
-personMarker is specifically used to show the current location of the user. An object describing the icon. This object is specific to google maps Marker method for the icon property. [More information regarding specific values for the icon is here.](https://developers.google.com/maps/documentation/javascript/reference#Icon)
+An object describing the icon. [More information regarding this is further down the page.](#icons)
 
-	$(selector).redils({singleMarker: {}});
+	$(selector).redils({singleMarker: false});
 
 #### zoomedIn ####
 
@@ -137,6 +160,109 @@ The line color between current location and nearest store. Line drawn is 3px wid
 #### Classes ####
 
 Numerous classes can be reassigned. Check the `defaultOpts {} as to which classes are able to be manipulated.
+
+
+### Icons ###
+
+#### url ####
+
+*Default* `default built in markers`   
+*Expects* `string`  
+*Available For* `All`
+
+The url of the map icon. This can be a sprite and in any CSS accepted format.
+
+	$(selector).redils(singleMarker: {
+		url: 'sprite.png'
+	});
+
+#### size ####
+
+*Default* `size of image from url`   
+*Expects* `array`  
+*Available For* `All`
+
+Size of the icon. This must be submitted if using a sprite otherwise the whole sprite will be visible. The array requires x by y an array of integers. The integers are interpreted as pixel values only.
+
+	$(selector).redils(singleMarker: {
+		size: [32,50]
+	});
+
+#### anchor ####
+
+*Default* `bottom middle of size`   
+*Expects* `array`  
+*Available For* `All`
+
+This marks the position of where the icon should "touch the ground". The sizing is relative to the size of the icon. The distance is worked out from the top left of the image which is 0,0 and counted to the right and down.
+
+	$(selector).redils(singleMarker: {
+		anchor: [16,50]
+	});
+
+#### origin ####
+
+*Default* `0,0`   
+*Expects* `array`  
+*Available For* `All`
+
+Specifically used for sprites. Defines where the marker's start point is for the size. Position of the icon is taken from the top left and is counted to the right and down.
+
+	$(selector).redils(singleMarker: {
+		anchor: [32,0]
+	});
+
+#### scaledSize ####
+
+*Default* `size of image from url`   
+*Expects* `array`  
+*Available For* `singleMarker,personMarker`
+
+Size of the icon before scaling. 
+
+	$(selector).redils(singleMarker: {
+		scaledSize: [64,100]
+	});
+
+#### fontFamily, fontStyle, fontWeight, textColor, textDecoration, textSize ####
+
+*Default* `arial sans-serif, normal, bold, black, none, 11`  
+*Expects* `string`  
+*Available For* `multipleMarker`
+
+Font styling for numbers of collections of markers. Multiple markers are used for the clusterer and these numbers show how many markers are defined by that marker.
+
+	$(selector).redils(singleMarker: {
+		fontFamily: 'times serif', 
+		fontStyle: 'italic', 
+		fontWeight: 'normal', 
+		textColor: '#330002', 
+		textDecoration: 'underline', 
+		textSize: 14
+	});
+
+#### anchorText ####
+
+*Default* `middle`  
+*Expects* `array`  
+*Available For* `multipleMarker`
+
+Position of the text from the center of the icon to the center of the text. For positioning the text.
+
+	$(selector).redils(singleMarker: {
+		anchorText: [0,0]
+	});
+
+
+### Actions ###
+
+#### #locate-me ####
+
+Clicking a selector with the id locate-me will trigger the map to add a marker on the map of the current position of the user using HTML5 geolocation.
+
+#### #nearest ####
+
+Clicking a selector with the id locate-me will trigger the map to add a marker on the map of the current position of the user using HTML5 geolocation and find the nearest marker to the user. If the marker is in the range of 100km the user's marker and the closest marker will be shown on the map otherwise the map will zoom in to the nearest marker. Between the markers a line is drawn. The line is a geodesic line connecting the two points to color this line use strokeColor.
 
 
 ### Methods ###
@@ -180,10 +306,13 @@ Send all the coords to zoom in on a specific area of the map. Expects an object 
 
 ### Changelog ###
 
-**Version 0.2**  
+**Version 0.3.0**  
+Updated documentation to reflect latest changes. Enabled user to put in a start position and pass an object in to the settings instead of linking to a json file.
+
+**Version 0.2.0**  
 Updates for better integration. Still needs documentation on some of the newer features.
 
-**Version 0.1**  
+**Version 0.1.0**  
 Initial commit
 
 
