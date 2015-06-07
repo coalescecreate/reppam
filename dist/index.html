@@ -97,6 +97,48 @@ $('.reppam').reppam({
 					</li>
 				</ul>
 			</section>
+			<section>
+				<h3>Simple Map</h3>
+				<p>Useful if all data doesn't need to be passed via AJAX</p>
+				<pre>
+$('.js-reppam--simple').reppam({
+	debug: true,
+	startPosition: [59.3194003,18.0292759,15],
+	useMarkerClusterer: false,
+	mapData: {
+		"locations": {
+	    "1": {
+	      "name": "Test store",
+	      "latitude": "59.3194003",
+	      "longitude": "18.0292759",
+	      "address": "&#x3C;p&#x3E;Somewhere&#x3C;br \/&#x3E;Somehow&#x3C;br \/&#x3E;Ph: somenumber&#x3C;br \/&#x3E;\nMon-Fri: 10:00-17:00&#x3C;br \/&#x3E;\nSat: 10:00-16:00&#x3C;\/p&#x3E;\n",
+	    }
+	  }
+	},
+	mapOptions: {
+		backgroundColor: '#FFFBF3',
+		scrollwheel: false,
+		styles: [{
+			"elementType": "geometry",
+			"stylers": [{"invert_lightness": true}, {"saturation": -100}, {"lightness": 31}]
+		}, {
+			"featureType": "water",
+			"elementType": "geometry",
+			"stylers": [{"lightness": 56}]
+		}, {
+			"featureType": "water",
+			"elementType": "labels",
+			"stylers": [{"lightness": -42}]
+		}]
+	},
+	singleMarker: {
+		url: '../images/map-icon-single.png',
+		size: [46, 62],
+	}
+});
+				</pre>
+				<div class="js-reppam--simple"></div>
+			</section>
 		</main>
 		<footer class="main-cont">
 			<a class="signature" href="http://youngskilled.com">
@@ -116,6 +158,7 @@ $('.reppam').reppam({
 			</a>
 		</footer>
 		<script type="text/javascript" src="/js/jquery.js"></script>
+		<script type="text/javascript" src="//maps.google.com/maps/api/js"></script>
 		<script type="text/javascript" src="/js/markerclusterer.js"></script>
 		<script type="text/javascript" src="/js/reppam.js"></script>
 		<script>
@@ -190,6 +233,47 @@ $('.reppam').reppam({
 					data.callback = callbackReturn;
 					$('.reppam').reppam('showCoords', data);
 
+				});
+
+
+				$('.js-reppam--simple').reppam({
+					debug: true,
+					startPosition: {
+						lat: 59.3194003,
+						lng: 18.0292759,
+						zoom: 15
+					},
+					useMarkerClusterer: false,
+					mapData: {
+						"locations": {
+					    "1": {
+					      "name": "Test store",
+					      "latitude": "59.3194003",
+					      "longitude": "18.0292759",
+					      "address": "<p>Somewhere<br \/>Somehow<br \/>Ph: somenumber<br \/>\nMon-Fri: 10:00-17:00<br \/>\nSat: 10:00-16:00<\/p>\n",
+					    }
+					  }
+					},
+					mapOptions: {
+						backgroundColor: '#FFFBF3',
+						scrollwheel: false,
+						styles: [{
+							"elementType": "geometry",
+							"stylers": [{"invert_lightness": true}, {"saturation": -100}, {"lightness": 31}]
+						}, {
+							"featureType": "water",
+							"elementType": "geometry",
+							"stylers": [{"lightness": 56}]
+						}, {
+							"featureType": "water",
+							"elementType": "labels",
+							"stylers": [{"lightness": -42}]
+						}]
+					},
+					singleMarker: {
+						url: '../images/map-icon-single.png',
+						size: [46, 62],
+					}
 				});
 
 

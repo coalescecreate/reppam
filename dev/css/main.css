@@ -797,10 +797,10 @@ section {
     .inline-list li:nth-child(3n-2) {
       margin-left: 0; }
 
-.reppam {
+.reppam, .js-reppam--simple {
   width: 100%;
   height: 500px; }
-  .reppam img {
+  .reppam img, .js-reppam--simple img {
     max-width: none; }
 
 /*# sourceMappingURL=main.css.map */

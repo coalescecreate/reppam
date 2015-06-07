@@ -41,7 +41,7 @@ Following structure is required for selector to work. (Using Emmet tab complete 
 
 Link to google maps API. Use in conjuction with urlParams to automatically get google maps url.
 
-	$(selector).redils({countriesUrl: 'countries.json'});
+	$(selector).reppam({countriesUrl: 'countries.json'});
 
 #### urlParams ####
 
@@ -50,7 +50,7 @@ Link to google maps API. Use in conjuction with urlParams to automatically get g
 
 Enter API key and other important information for the url parameters. [More information about using API keys here](https://developers.google.com/maps/documentation/javascript/tutorial)
 
-	$(selector).redils({countriesUrl: 'countries.json'});
+	$(selector).reppam({countriesUrl: 'countries.json'});
 
 #### mapOptions ####
 
@@ -59,7 +59,7 @@ Enter API key and other important information for the url parameters. [More info
 
 Options relating to the instantiation of google maps. Common usage includes [styles from the google maps styling wizard](http://gmaps-samples-v3.googlecode.com/svn/trunk/styledmaps/wizard/index.html) and background color to match the background color of the map. Optionally a no scroll if there is content after the map that the user needs to be able to get to. [All options for the mapOptions object are here](https://developers.google.com/maps/documentation/javascript/reference#MapOptions)
 
-	$(selector).redils({mapOptions: {}});
+	$(selector).reppam({mapOptions: {}});
 
 #### mapData ####
 
@@ -91,7 +91,7 @@ Relative link to a json file containing the following. isoCode is the two letter
 
 Countries are so that map can be focused on the country your IP originates from. This is a method of caching for Google's geocoder. All values come from there. For a faster more compact version of this plugin the object data can be added directly to this property instead of being ajaxed in. Especially useful for maps with only a couple of markers.
 
-	$(selector).redils({mapData: 'map-data.json'});
+	$(selector).reppam({mapData: 'map-data.json'});
 
 #### defaultCountry ####
 
@@ -100,7 +100,7 @@ Countries are so that map can be focused on the country your IP originates from.
 
 If there are no markers to display in the country that the user comes from. This country will be then shown.
 
-	$(selector).redils({countriesUrl: 'countries.json'});
+	$(selector).reppam({countriesUrl: 'countries.json'});
 
 #### startPosition ####
 
@@ -109,7 +109,16 @@ If there are no markers to display in the country that the user comes from. This
 
 This will override any other automatic actions. If the map is to be focussed on a particular spot no matter the user. Object uses three properties. Zoom an integer between 3-21, lat an integer between -90 and 90, lng an integer between -90 and 90.
 
-	$(selector).redils({startPosition: false});
+	$(selector).reppam({startPosition: false});
+
+#### useMarkerClusterer ####
+
+*Default* `true`   
+*Expects* `boolean`
+
+Use this only if you want to include a map that doesn't use the markerclusterer library but that has the library installed.
+
+	$(selector).reppam({useMarkerClusterer: false});
 
 #### multipleMarker ####
 
@@ -118,7 +127,7 @@ This will override any other automatic actions. If the map is to be focussed on 
 
 An object describing the icon. [More information regarding this is further down the page.](#icons)
 
-	$(selector).redils({multipleMarker: false});
+	$(selector).reppam({multipleMarker: false});
 
 #### singleMarker ####
 
@@ -127,7 +136,7 @@ An object describing the icon. [More information regarding this is further down 
 
 An object describing the icon. [More information regarding this is further down the page.](#icons)
 
-	$(selector).redils({singleMarker: false});
+	$(selector).reppam({singleMarker: false});
 
 #### personMarker ####
 
@@ -136,7 +145,7 @@ An object describing the icon. [More information regarding this is further down 
 
 An object describing the icon. [More information regarding this is further down the page.](#icons)
 
-	$(selector).redils({singleMarker: false});
+	$(selector).reppam({singleMarker: false});
 
 #### zoomedIn ####
 
@@ -145,7 +154,7 @@ An object describing the icon. [More information regarding this is further down 
 
 The zoom level on google maps for zooming in on a specific marker. The higher the number the higher the zoom.
 
-	$(selector).redils({zoomedIn: 14});
+	$(selector).reppam({zoomedIn: 14});
 
 #### strokeColor ####
 
@@ -154,7 +163,7 @@ The zoom level on google maps for zooming in on a specific marker. The higher th
 
 The line color between current location and nearest store. Line drawn is 3px wide.
 
-	$(selector).redils({strokeColor: '#000000'});
+	$(selector).reppam({strokeColor: '#000000'});
 
 
 #### Classes ####
@@ -172,7 +181,7 @@ Numerous classes can be reassigned. Check the `defaultOpts {} as to which classe
 
 The url of the map icon. This can be a sprite and in any CSS accepted format.
 
-	$(selector).redils(singleMarker: {
+	$(selector).reppam(singleMarker: {
 		url: 'sprite.png'
 	});
 
@@ -184,7 +193,7 @@ The url of the map icon. This can be a sprite and in any CSS accepted format.
 
 Size of the icon. This must be submitted if using a sprite otherwise the whole sprite will be visible. The array requires x by y an array of integers. The integers are interpreted as pixel values only.
 
-	$(selector).redils(singleMarker: {
+	$(selector).reppam(singleMarker: {
 		size: [32,50]
 	});
 
@@ -196,7 +205,7 @@ Size of the icon. This must be submitted if using a sprite otherwise the whole s
 
 This marks the position of where the icon should "touch the ground". The sizing is relative to the size of the icon. The distance is worked out from the top left of the image which is 0,0 and counted to the right and down.
 
-	$(selector).redils(singleMarker: {
+	$(selector).reppam(singleMarker: {
 		anchor: [16,50]
 	});
 
@@ -208,7 +217,7 @@ This marks the position of where the icon should "touch the ground". The sizing 
 
 Specifically used for sprites. Defines where the marker's start point is for the size. Position of the icon is taken from the top left and is counted to the right and down.
 
-	$(selector).redils(singleMarker: {
+	$(selector).reppam(singleMarker: {
 		anchor: [32,0]
 	});
 
@@ -220,7 +229,7 @@ Specifically used for sprites. Defines where the marker's start point is for the
 
 Size of the icon before scaling. 
 
-	$(selector).redils(singleMarker: {
+	$(selector).reppam(singleMarker: {
 		scaledSize: [64,100]
 	});
 
@@ -232,7 +241,7 @@ Size of the icon before scaling.
 
 Font styling for numbers of collections of markers. Multiple markers are used for the clusterer and these numbers show how many markers are defined by that marker.
 
-	$(selector).redils(singleMarker: {
+	$(selector).reppam(singleMarker: {
 		fontFamily: 'times serif', 
 		fontStyle: 'italic', 
 		fontWeight: 'normal', 
@@ -249,7 +258,7 @@ Font styling for numbers of collections of markers. Multiple markers are used fo
 
 Position of the text from the center of the icon to the center of the text. For positioning the text.
 
-	$(selector).redils(singleMarker: {
+	$(selector).reppam(singleMarker: {
 		anchorText: [0,0]
 	});
 
@@ -273,7 +282,7 @@ Clicking a selector with the id locate-me will trigger the map to add a marker o
 
 Send the ID of the listing to show the marker on the map. The zoomedIn properties will be used to zoom in on that marker.
 
-	$(selector).redils('showOnMap', {
+	$(selector).reppam('showOnMap', {
 		id: idOfListing,
 		callback: function(response) {
 			//Response is an object that returns true/false
@@ -286,7 +295,7 @@ Send the ID of the listing to show the marker on the map. The zoomedIn propertie
 
 Send all the coords to zoom in on a specific area of the map. Expects an object that describes the latitude, longitude and zoom level of the map.
 
-	$(selector).redils('showOnMap', {
+	$(selector).reppam('showOnMap', {
 		lat: latitude, //(integer between 90 and -90)
 		lng: longitude, //(integer between 90 and -90)
 		zoom: 14, //(intger between 0 and 21)
@@ -307,7 +316,7 @@ Send all the coords to zoom in on a specific area of the map. Expects an object 
 ### Changelog ###
 
 **Version 0.3.0**  
-Updated documentation to reflect latest changes. Enabled user to put in a start position and pass an object in to the settings instead of linking to a json file.
+Updated documentation to reflect latest changes. Enabled user to put in a start position and pass an object in to the mapData instead of linking to a json file.
 
 **Version 0.2.0**  
 Updates for better integration. Still needs documentation on some of the newer features.

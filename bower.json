@@ -15,9 +15,7 @@
     "tests"
   ],
   "dependencies": {
-    "jquery": "1.11",
-    "normalize-scss": "~3.0.1",
-    "google-marker-clusterer-plus": "2.1.2"
+    "jquery": ">1.7"
   },
   "homepage": "https://github.com/youngskilled/js-reppam",
   "keywords": [
@@ -25,5 +23,9 @@
     "google",
     "maps",
     "youngskilled"
-  ]
+  ],
+  "devDependencies": {
+    "google-marker-clusterer-plus": "~2.1.2",
+    "normalize-scss": "~3.0.3"
+  }
 }

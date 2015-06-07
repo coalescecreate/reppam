@@ -7,9 +7,9 @@
 	//Private Methods
 	var priv = {
 		init: function() {
-			var $this = this,
-				paramObj = $this.set.urlParams,
-				url = $this.set.mapsURL + '?callback=window.reppamCallback';
+			var $this = this;
+			var paramObj = $this.set.urlParams;
+			var url = $this.set.mapsURL + '?callback=window.reppamCallback';
 
 			if(typeof google === 'undefined') {
 
@@ -29,7 +29,7 @@
 				});
 
 			} else {
-				$(window).trigger('scriptLoaded.reppam');
+				priv.getData.apply($this);
 			}
 
 			$(window).on('scriptLoaded.reppam', function() {
@@ -42,6 +42,7 @@
 			var $this = this;
 
 			if(typeof $this.set.mapData === 'object') {
+				$this.data('mapData', $this.set.mapData);
 				priv.renderMap.apply($this);
 			} else {
 				//Get marker information
@@ -61,14 +62,13 @@
 				});
 			}
 
-
 		},
 		renderMap: function() {
-			var $this = this,
-				zoomLocation,
-				swObj,
-				neObj,
-				bounds;
+			var $this = this;
+			var zoomLocation;
+			var swObj;
+			var neObj;
+			var bounds;
 
 			if($this.set.startPosition !== false) {
 
@@ -97,7 +97,6 @@
 				$this.set.mapOptions.center = new google.maps.LatLng(0, 0);
 				$this.set.mapOptions.zoom = 2;
 			}
-			
 
 			//Initiate map at right location.
 			$this.set.map = new google.maps.Map($this[0], $this.set.mapOptions);
@@ -135,11 +134,11 @@
 			//Find nearest store
 			$('#nearest').on('click', function(e) {
 				e.preventDefault();
-				var $nearest = $(this),
-					closest = [],
-					currentPos,
-					storePos,
-					bounds;
+				var $nearest = $(this);
+				var closest = [];
+				var currentPos;
+				var storePos;
+				var bounds;
 
 				$nearest.addClass('loading');
 
@@ -193,12 +192,20 @@
 					priv.logPosition.apply($this);
 
 				});
-				
+
 			});
 
 			$(window).on('resize', function() {
-				$this.set.map.setCenter($this.set.center);
-				$this.set.map.setZoom($this.set.zoom);
+				//update the position
+				priv.logPosition.apply($this);
+
+				//center the map on resize if any selected marker exist
+				if($this.set.current.infoWindow) {
+					$this.set.map.setCenter($this.set.current.infoWindow.position);
+					$this.set.map.setZoom($this.set.zoom);
+				}
+
+				google.maps.event.trigger($this.set.map, 'resize');
 			});
 
 			//Directions to closest store.
@@ -206,11 +213,11 @@
 
 		},
 		addMe: function(myPosition) {
-			var $this = this,
-				myMarker,
-				personMarker = $this.set.personMarker,
-				markerOptions = {},
-				pos;
+			var $this = this;
+			var myMarker;
+			var personMarker = $this.set.personMarker;
+			var markerOptions = {};
+			var pos;
 
 			//Remove potential marker already added
 			if($this.set.current.position) $this.set.current.position.setMap(null);
@@ -228,7 +235,7 @@
 				if(personMarker.scaledSize) markerOptions.icon.scaledSize = new google.maps.Size(personMarker.scaledSize[0], personMarker.scaledSize[1]);
 			}
 			myMarker = new google.maps.Marker(markerOptions);
-			
+
 			//Adds a "you are here" marker.
 			myMarker.setMap($this.set.map);
 			$this.set.map.setCenter(pos);
@@ -246,27 +253,26 @@
 			$this.set.current.position = myMarker;
 		},
 		addMarkers: function() {
-			var $this = this,
-				locations = $this.set.mapData.locations,
-				singleMarker = $this.set.singleMarker,
-				multipleMarker = $this.set.multipleMarker,
-				latLng,
-				position,
-				marker,
-				markers = [],
-				markerOptions = {},
-				multipleMarkerOptions = {},
-				markerCluster;
+			var $this = this;
+			var locations = $this.set.mapData.locations;
+			var singleMarker = $this.set.singleMarker;
+			var multipleMarker = $this.set.multipleMarker;
+			var latLng;
+			var position;
+			var marker;
+			var markers = [];
+			var markerOptions = {};
+			var multipleMarkerOptions = {};
+			var markerCluster;
 
 			//Parse marker data.
 			for(var markerData in locations) {
 				position = locations[markerData];
-				
-				if(position.latitude === '' || position.longitude === '') continue;
 
-				latLng = new google.maps.LatLng(position.latitude, position.longitude);
+				latLng = priv.parseLatLong.call($this, position.latitude, position.longitude, markerData);
+				if(!latLng) continue;
+
 				//https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions
-
 				markerOptions = {
 					id: markerData,
 					content: locations[markerData].address,
@@ -290,7 +296,7 @@
 					var info = new google.maps.InfoWindow({
 							content: this.content
 						});
-					
+
 					if($this.set.current.infoWindow) $this.set.current.infoWindow.close();
 
 					//Only set zoom if zooming in (not out) and marker has already been clicked once.
@@ -308,10 +314,10 @@
 				markers.push(marker);
 			}
 
-			//If MarkerClusterer is defined and loaded on the page use that. 
+			//If MarkerClusterer is defined and loaded on the page use that.
 			// http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/docs/reference.html
 			//Otherwise use google markers.
-			if(typeof MarkerClusterer !== 'undefined') {
+			if(typeof MarkerClusterer !== 'undefined' && $this.set.useMarkerClusterer) {
 				markerCluster = new MarkerClusterer($this.set.map, markers, {
 					maxZoom: $this.set.zoomedIn - 1
 				});
@@ -352,9 +358,9 @@
 		},
 		moveToMarker: function(location, callback) {
 			//Show specific marker on map.
-			var $this = this,
-				latLng,
-				currentMarker = $this.set.mapData.locations[location];
+			var $this = this;
+			var latLng;
+			var currentMarker = $this.set.mapData.locations[location];
 
 			callback = callback || function() {};
 
@@ -370,8 +376,8 @@
 		},
 		moveToCoords: function(coords) {
 			//Show specific area on map.
-			var $this = this,
-				latLng;
+			var $this = this;
+			var latLng;
 
 			coords.callback = coords.callback || function() {};
 
@@ -386,12 +392,12 @@
 			return coords.callback({success: true});
 		},
 		getLocation: function(callback) {
-			var myPosition,
-				marker;
+			var myPosition;
+			var marker;
 
 			if(navigator.geolocation) {
 				navigator.geolocation.getCurrentPosition(function(position) {
-					
+
 					myPosition = {lat: position.coords.latitude, lng: position.coords.longitude};
 					if(typeof callback === 'function') return callback(myPosition);
 
@@ -405,20 +411,20 @@
 
 		},
 		withinBounds: function(sw, ne, locations) {
-			//Returns if marker is found within bounds given. 
+			//Returns if marker is found within bounds given.
 			//Requires: sw:{lat:(int),lng(int)}, ne:{lat:(int),lng:(int)}, marker object
 			// +  ne
 			// sw  +
 
-			var inBounds = false,
-				markerData,
-				inLat,
-				position;
+			var inBounds = false;
+			var markerData;
+			var inLat;
+			var position;
 
 			for(markerData in locations) {
 				inLat = false;
 				position = locations[markerData];
-				
+
 				if(position.latitude > sw.lat && position.latitude < ne.lat) inLat = true;
 				if(inLat) {
 					if(position.longitude > sw.lng && position.longitude < ne.lng) {
@@ -432,13 +438,13 @@
 		},
 		findNearest: function(myPosition, locations) {
 			//Use this perhaps to expand bounds, nearby countries.
-			var $this = this,
-				markerData,
-				distance,
-				storeLocation,
-				bounds,
-				closest = [],
-				counter = 0;
+			var $this = this;
+			var markerData;
+			var distance;
+			var storeLocation;
+			var bounds;
+			var closest = [];
+			var counter = 0;
 
 			for(markerData in locations) {
 				storeLocation = {lat: locations[markerData].latitude, lng: locations[markerData].longitude};
@@ -450,7 +456,7 @@
 				};
 				counter++;
 			}
-			
+
 			//Order stores in ascending order of closest to furtherst away.
 			closest.sort(function(a, b) {
 				return a.distance - b.distance;
@@ -464,14 +470,29 @@
 		},
 		haversine: function(p1, p2) {
 			//Distance between two geolocations in km.
-			var R = 6371,
-				dLat  = priv.radians(p2.lat - p1.lat),
-				dLng = priv.radians(p2.lng - p1.lng),
-				a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(priv.radians(p1.lat)) * Math.cos(priv.radians(p2.lat)) * Math.sin(dLng / 2) * Math.sin(dLng / 2),
-				c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)),
-				d = R * c;
+			var R = 6371;
+			var dLat  = priv.radians(p2.lat - p1.lat);
+			var dLng = priv.radians(p2.lng - p1.lng);
+			var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(priv.radians(p1.lat)) * Math.cos(priv.radians(p2.lat)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+			var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+			var d = R * c;
 
 			return Math.round(d);
+		},
+
+		parseLatLong: function(lat, long, markerData) {
+			var $this = this;
+			var latitude = parseFloat(lat);
+			var longitude = parseFloat(long);
+
+			if(isNaN(latitude) || isNaN(longitude)) {
+				if($this.set.debug) {
+					console.log('There was a problem with marker →', markerData, lat, long);
+				}
+				return false;
+			} else {
+				return new google.maps.LatLng(latitude, longitude);
+			}
 		}
 	};
 
@@ -479,9 +500,9 @@
 		init: function(options) {
 
 			return this.each(function() {
-				
-				var $this = $(this),
-					objectData = $this.data();
+
+				var $this = $(this);
+				var objectData = $this.data();
 
 				$this.set = $.extend({}, defaultOpts, options, objectData, privateOpts);
 
@@ -493,8 +514,8 @@
 		showOnMap: function(options) {
 
 			return this.each(function() {
-				var $this = $(this),
-					objectData = $this.data();
+				var $this = $(this);
+				var objectData = $this.data();
 
 				$this.set = $.extend({}, $this.data());
 				priv.moveToMarker.apply($this, [options.id, options.callback]);
@@ -505,18 +526,18 @@
 		showCoords: function(options) {
 
 			return this.each(function() {
-				var $this = $(this),
-					objectData = $this.data();
+				var $this = $(this);
+				var objectData = $this.data();
 
 				$this.set = $.extend({}, $this.data());
 				priv.moveToCoords.apply($this, [options]);
 				$this.data($this.set);
 
-			});	
+			});
 
 		},
 		update: function(options) {
-			
+
 			return this.each(function() {
 				var $this = $(this);
 
@@ -550,7 +571,8 @@
 		personMarker: false,
 		zoomedIn: 14,
 		startPosition: false,
-		strokeColor: '#000000'
+		strokeColor: '#000000',
+		useMarkerClusterer: true
 	};
 
 	var privateOpts = {
