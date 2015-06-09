@@ -315,6 +315,9 @@ Send all the coords to zoom in on a specific area of the map. Expects an object 
 
 ### Changelog ###
 
+**Version 0.3.1**  
+Parsed start data into integers.
+
 **Version 0.3.0**  
 Updated documentation to reflect latest changes. Enabled user to put in a start position and pass an object in to the mapData instead of linking to a json file.
 

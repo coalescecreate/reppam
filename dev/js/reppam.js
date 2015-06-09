@@ -72,8 +72,8 @@
 
 			if($this.set.startPosition !== false) {
 
-				$this.set.mapOptions.center = new google.maps.LatLng($this.set.startPosition.lat, $this.set.startPosition.lng);
-				$this.set.mapOptions.zoom = $this.set.startPosition.zoom;
+				$this.set.mapOptions.center = priv.parseLatLng.apply($this, [$this.set.startPosition.lat, $this.set.startPosition.lng, $this.set.startPosition]);
+				$this.set.mapOptions.zoom = parseInt($this.set.startPosition.zoom);
 
 			} else if($this.set.mapData.countries) {
 				//Use GEO_IP data to set right country.
@@ -269,7 +269,7 @@
 			for(var markerData in locations) {
 				position = locations[markerData];
 
-				latLng = priv.parseLatLong.call($this, position.latitude, position.longitude, markerData);
+				latLng = priv.parseLatLng.apply($this, [position.latitude, position.longitude, markerData]);
 				if(!latLng) continue;
 
 				//https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions
@@ -479,15 +479,14 @@
 
 			return Math.round(d);
 		},
-
-		parseLatLong: function(lat, long, markerData) {
+		parseLatLng: function(lat, lng, markerData) {
 			var $this = this;
 			var latitude = parseFloat(lat);
-			var longitude = parseFloat(long);
+			var longitude = parseFloat(lng);
 
 			if(isNaN(latitude) || isNaN(longitude)) {
 				if($this.set.debug) {
-					console.log('There was a problem with marker →', markerData, lat, long);
+					console.log('There was a problem with marker →', markerData, lat, lng);
 				}
 				return false;
 			} else {
