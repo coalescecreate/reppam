@@ -240,6 +240,11 @@
 			myMarker.setMap($this.set.map);
 			$this.set.map.setCenter(pos);
 
+			//Zoom in if too zoomed out.
+			if($this.set.map.getZoom() < 13) {
+				$this.set.map.setZoom(13);
+			}
+
 			google.maps.event.addListener(myMarker, 'click', function() {
 				//Only set zoom if zooming in.
 				if($this.set.map.getZoom() < $this.set.zoomedIn) {

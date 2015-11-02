@@ -315,6 +315,9 @@ Send all the coords to zoom in on a specific area of the map. Expects an object 
 
 ### Changelog ###
 
+**Version 0.3.2**  
+When using locate-me action map will zoom in to level 13 if more zoomed out than that.
+
 **Version 0.3.1**  
 Parsed start data into integers.
 
