@@ -378,6 +378,7 @@
 			var $this = this;
 			var latLng;
 			var currentMarker = $this.set.mapData.locations[location];
+			var whichMarker;
 
 			callback = callback || function() {};
 
@@ -386,6 +387,14 @@
 				return callback({'success': false});
 			}
 			latLng = new google.maps.LatLng(currentMarker.latitude, currentMarker.longitude);
+			
+			for (var i = 0; i < $this.set.markers.length; i++) {
+				if($this.set.markers[i].id === location) whichMarker = i;
+			}
+
+			if(whichMarker !== undefined) {
+				google.maps.event.trigger($this.set.markers[whichMarker], 'click');
+			}
 
 			$this.set.map.setCenter(latLng);
 			$this.set.map.setZoom($this.set.zoomedIn);

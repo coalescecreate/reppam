@@ -327,12 +327,14 @@ Removes all current markers, adds new markers based on whats set in `mapData`, c
 ### Roadmap ###
 
 * Option to expand bounds to show initial countryand then the nearest store to that country.
-* Show info window when using method show on map - needs to have markers as a global plugin object.
 * Add distance to info windows when show nearest store has been used.
 * Show next closest store.
 
 
 ### Changelog ###
+
+**Version 0.5.0**  
+Info window now shows when using method showOnMap.
 
 **Version 0.4.0**  
 Added new methods to remove and replace coordinates. Changed when data is saved to .data() so that it happens after async changes.
