@@ -333,6 +333,9 @@ Removes all current markers, adds new markers based on whats set in `mapData`, c
 
 ### Changelog ###
 
+**Version 0.5.1**  
+Matching of markers to id's was too specific, now enabling string to number comparsions.
+
 **Version 0.5.0**  
 Info window now shows when using method showOnMap.
 

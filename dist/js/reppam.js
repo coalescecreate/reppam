@@ -389,9 +389,10 @@
 			latLng = new google.maps.LatLng(currentMarker.latitude, currentMarker.longitude);
 			
 			for (var i = 0; i < $this.set.markers.length; i++) {
-				if($this.set.markers[i].id === location) whichMarker = i;
+				if($this.set.markers[i].id == location) whichMarker = i;
 			}
 
+			console.log('var whichMarker', whichMarker);
 			if(whichMarker !== undefined) {
 				google.maps.event.trigger($this.set.markers[whichMarker], 'click');
 			}
