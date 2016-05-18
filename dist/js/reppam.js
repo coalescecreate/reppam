@@ -42,8 +42,8 @@
 			var $this = this;
 
 			if(typeof $this.set.mapData === 'object') {
-				$this.data('mapData', $this.set.mapData);
 				priv.renderMap.apply($this);
+				$this.data($this.set);
 			} else {
 				//Get marker information
 				$.ajax({
@@ -52,8 +52,8 @@
 					dataType: 'JSON',
 					success: function(data) {
 						$this.set.mapData = data;
-						$this.data('mapData', data);
 						priv.renderMap.apply($this);
+						$this.data($this.set);
 					},
 					error: function(msg) {
 						//essential data
@@ -265,10 +265,8 @@
 			var latLng;
 			var position;
 			var marker;
-			var markers = [];
 			var markerOptions = {};
 			var multipleMarkerOptions = {};
-			var markerCluster;
 
 			//Parse marker data.
 			for(var markerData in locations) {
@@ -316,14 +314,14 @@
 					priv.logPosition.apply($this);
 				});
 
-				markers.push(marker);
+				$this.set.markers.push(marker);
 			}
 
 			//If MarkerClusterer is defined and loaded on the page use that.
 			// http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/docs/reference.html
 			//Otherwise use google markers.
 			if(typeof MarkerClusterer !== 'undefined' && $this.set.useMarkerClusterer) {
-				markerCluster = new MarkerClusterer($this.set.map, markers, {
+				$this.set.markerCluster = new MarkerClusterer($this.set.map, $this.set.markers, {
 					maxZoom: $this.set.zoomedIn - 1
 				});
 				if(multipleMarker !== false) {
@@ -344,14 +342,28 @@
 					if(multipleMarker.textDecoration) multipleMarkerOptions.textDecoration = multipleMarker.textDecoration;
 					if(multipleMarker.textSize) multipleMarkerOptions.textSize = multipleMarker.textSize;
 
-					markerCluster.setStyles([
+					$this.set.markerCluster.setStyles([
 						multipleMarkerOptions
 					]);
 				}
 			} else {
-				for (var i = 0; i < markers.length; i++) {
-					markers[i].setMap($this.set.map);
+				for (var i = 0; i < $this.set.markers.length; i++) {
+					$this.set.markers[i].setMap($this.set.map);
 				}
+			}
+
+		},
+		removeAllMarkers: function() {
+			var $this = this;
+
+			for (var i = 0; i < $this.set.markers.length; i++) {
+				$this.set.markers[i].setMap(null);
+			}
+			
+			$this.set.markers = [];
+
+			if(typeof MarkerClusterer !== 'undefined' && $this.set.useMarkerClusterer) {
+				$this.set.markerCluster.clearMarkers();
 			}
 
 		},
@@ -511,7 +523,6 @@
 				$this.set = $.extend({}, defaultOpts, options, objectData, privateOpts);
 
 				priv.init.apply($this);
-				$this.data($this.set);
 
 			});
 		},
@@ -535,6 +546,39 @@
 
 				$this.set = $.extend({}, $this.data());
 				priv.moveToCoords.apply($this, [options]);
+				$this.data($this.set);
+
+			});
+
+		},
+		removeAllMarkers: function() {
+
+			return this.each(function() {
+				var $this = $(this);
+				var objectData = $this.data();
+
+				$this.set = $.extend({}, $this.data());
+				priv.removeAllMarkers.apply($this);
+				$this.data($this.set);
+
+			});
+
+		},
+		replaceAllMarkers: function(options) {
+
+			return this.each(function() {
+				var $this = $(this);
+				var objectData = $this.data();
+
+				$this.set = $.extend({}, $this.data(), options);
+				priv.removeAllMarkers.apply($this);
+				priv.addMarkers.apply($this);
+
+				//Re-center map
+				if(options.startPosition) {
+					priv.moveToCoords.apply($this, [options.startPosition]);
+				}
+
 				$this.data($this.set);
 
 			});
@@ -570,6 +614,8 @@
 		defaultCountry: false,
 		mapData: 'map-data.json',
 		mapOptions: {},
+		markers: [],
+		markerCluster: {},
 		multipleMarker: false,
 		singleMarker: false,
 		personMarker: false,

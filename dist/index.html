@@ -60,6 +60,8 @@ $('.reppam').reppam({
 				<a href="#" id="nearest" class="btn">Find Nearest Store</a>
 				<a href="#" class="coords btn" data-coords='{"lat":30,"lng":20,"zoom":5}'>Destination 1</a>
 				<a href="#" class="coords btn" data-coords='{"lat":50,"lng":60,"zoom":13}'>Destination 2</a>
+				<a href="#" class="js-remove-markers btn">Remove Markers</a>
+				<a href="#" class="js-replace-markers btn">Replace Markers</a>
 				<div class="reppam"></div>
 				<h3>Example store list</h3>
 				<ul class="inline-list">
@@ -201,6 +203,60 @@ $('.js-reppam--simple').reppam({
 						size: [46, 62],
 					},
 					strokeColor: '#FF7580'
+				});
+
+				$('.js-remove-markers').on('click', function(e){
+					e.preventDefault();
+					$('.reppam').reppam('removeAllMarkers');
+				});
+
+				$('.js-replace-markers').on('click', function(e){
+					e.preventDefault();
+
+					var pickup_points_center = {
+						zoom: 15,
+						lat: 59.316555,
+						lng: 18.054471
+					}
+					var pickup_points = {
+						locations: {
+							1: {
+								name: 'PostNord Stockholm Rosenlundsg',
+								address: 'PostNord Stockholm Rosenlundsg<br>Rosenlundsgatan 9<br>118 53, Stockholm',
+								latitude: 59.3166455,
+								longitude: 18.0539243
+							},
+							2: {
+								name: 'Saras Tobak',
+								address: 'Saras Tobak<br>Rosenlundsgatan 7<br>118 53, Stockholm',
+								latitude: 59.3167148,
+								longitude: 18.0537986
+							},
+							3: {
+								name: 'Coop Zinken',
+								address: 'Coop Zinken<br>Hornsgatan 102<br>118 21, Stockholm',
+								latitude: 59.3175591,
+								longitude: 18.0487533
+							},
+							4: {
+								name: 'Hemköp Mariahallen',
+								address: 'Hemköp Mariahallen<br>Hornsgatan 74<br>118 21, Stockholm',
+								latitude: 59.3175734,
+								longitude: 18.0601383
+							},
+							5: {
+								name: 'Coop Mariatorget',
+								address: 'Coop Mariatorget<br>Hornsgatan 54<br>118 21, Stockholm',
+								latitude: 59.3189754,
+								longitude: 18.0601383
+							}
+						}
+					}
+
+					$('.reppam').reppam('replaceAllMarkers', {
+						mapData: pickup_points,
+						startPosition: pickup_points_center
+					});
 				});
 
 				$('.show-on-map').on('click', function(e){

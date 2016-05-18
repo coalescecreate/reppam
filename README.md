@@ -304,6 +304,25 @@ Send all the coords to zoom in on a specific area of the map. Expects an object 
 		}
 	});
 
+#### removeAllMarkers ####
+
+*Expects* `no options`
+
+Remove all markers from map including clusters.
+
+	$(selector).reppam('removeAllMarkers');
+
+#### replaceAllMarkers ####
+
+*Expects* `update standard options as needed`
+
+Removes all current markers, adds new markers based on whats set in `mapData`, centers map and zooms if `startPosition` is defined in options.
+
+	$(selector).reppam('replaceAllMarkers', {
+		mapData: {}, // new mapData object with new list of coordinates
+		startPosition: {} // new startPosition object with lat, lng, zoom
+	});
+
 
 ### Roadmap ###
 
@@ -314,6 +333,9 @@ Send all the coords to zoom in on a specific area of the map. Expects an object 
 
 
 ### Changelog ###
+
+**Version 0.4.0**  
+Added new methods to remove and replace coordinates. Changed when data is saved to .data() so that it happens after async changes.
 
 **Version 0.3.2**  
 When using locate-me action map will zoom in to level 13 if more zoomed out than that.
