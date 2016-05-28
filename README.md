@@ -165,6 +165,16 @@ The line color between current location and nearest store. Line drawn is 3px wid
 
 	$(selector).reppam({strokeColor: '#000000'});
 
+#### useTitleInInfoWindow ####
+
+*Default* `false`   
+*Expects* `boolean`
+*Since* 0.6.0
+
+If the title should appear in the infoWindow of the marker's popup window.
+
+	$(selector).reppam({useTitleInInfoWindow: true});
+
 
 #### Classes ####
 
@@ -332,6 +342,9 @@ Removes all current markers, adds new markers based on whats set in `mapData`, c
 
 
 ### Changelog ###
+
+**Version 0.6.0**  
+Added option to have the title in the infoWindow.
 
 **Version 0.5.1**  
 Matching of markers to id's was too specific, now enabling string to number comparsions.

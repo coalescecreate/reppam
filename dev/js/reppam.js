@@ -267,6 +267,7 @@
 			var marker;
 			var markerOptions = {};
 			var multipleMarkerOptions = {};
+			var content = '';
 
 			//Parse marker data.
 			for(var markerData in locations) {
@@ -276,9 +277,15 @@
 				if(!latLng) continue;
 
 				//https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions
+				content = locations[markerData].address;
+
+				if($this.set.useTitleInInfoWindow) {
+					content = '<strong>' + locations[markerData].name + '</strong><br>' + content;
+				}
+
 				markerOptions = {
 					id: markerData,
-					content: locations[markerData].address,
+					content: content,
 					position: latLng,
 					title: locations[markerData].name
 				};
@@ -392,7 +399,6 @@
 				if($this.set.markers[i].id == location) whichMarker = i;
 			}
 
-			console.log('var whichMarker', whichMarker);
 			if(whichMarker !== undefined) {
 				google.maps.event.trigger($this.set.markers[whichMarker], 'click');
 			}
@@ -632,7 +638,8 @@
 		zoomedIn: 14,
 		startPosition: false,
 		strokeColor: '#000000',
-		useMarkerClusterer: true
+		useMarkerClusterer: true,
+		useTitleInInfoWindow: false
 	};
 
 	var privateOpts = {
