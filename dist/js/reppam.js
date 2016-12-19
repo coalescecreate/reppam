@@ -112,6 +112,8 @@
 			priv.enableEvents.apply($this);
 			priv.addMarkers.apply($this);
 
+			$this.trigger('reppam.isLoaded', [$this.set.mapData]);
+
 		},
 		enableEvents: function() {
 			var $this = this;

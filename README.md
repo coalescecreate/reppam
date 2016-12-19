@@ -354,6 +354,18 @@ Removes all current markers, adds new markers based on whats set in `mapData`, c
 	});
 
 
+### Events ###
+
+*Event* `reppam.isLoaded`
+*Properties* `mapData`
+
+Triggers an event on the map selector for running methods once map is fully rendered. Sends map data retrieved via AJAX.
+
+	$(selector).on('reppam.isLoaded', function(event, mapData) {
+		// Run code
+	});
+
+
 ### Roadmap ###
 
 * Option to expand bounds to show initial countryand then the nearest store to that country.
@@ -362,6 +374,9 @@ Removes all current markers, adds new markers based on whats set in `mapData`, c
 
 
 ### Changelog ###
+
+**Version 0.8.0**  
+Added a loaded completion event.
 
 **Version 0.7.0**  
 New method to set map based on bounds.
