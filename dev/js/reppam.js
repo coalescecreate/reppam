@@ -424,6 +424,26 @@
 			$this.set.map.setZoom(coords.zoom);
 			return coords.callback({success: true});
 		},
+		moveToBounds: function(bounds) {
+			//Show specific area on map.
+			var $this = this;
+			var newBounds;
+
+			bounds.callback = bounds.callback || function() {};
+
+			if(!bounds.sw || !bounds.ne) {
+				if($this.set.debug) console.log('Bounds need the latitude and longitude of the north-eastern and south-western corners, ne:' + JSON.stringify(bounds.ne) + ' sw: ' + JSON.stringify(bounds.sw));
+				return bounds.callback({success: false});
+			}
+
+			swObj = new google.maps.LatLng(bounds.sw.lat, bounds.sw.lng);
+			neObj = new google.maps.LatLng(bounds.ne.lat, bounds.ne.lng);
+
+			//Set the bounds using googles functions.
+			newBounds = new google.maps.LatLngBounds(swObj, neObj);
+			$this.set.map.fitBounds(newBounds);
+			return bounds.callback({success: true});
+		},
 		getLocation: function(callback) {
 			var myPosition;
 			var marker;
@@ -562,6 +582,19 @@
 
 				$this.set = $.extend({}, $this.data());
 				priv.moveToCoords.apply($this, [options]);
+				$this.data($this.set);
+
+			});
+
+		},
+		showBounds: function(options) {
+
+			return this.each(function() {
+				var $this = $(this);
+				var objectData = $this.data();
+
+				$this.set = $.extend({}, $this.data());
+				priv.moveToBounds.apply($this, [options]);
 				$this.data($this.set);
 
 			});

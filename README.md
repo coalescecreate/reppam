@@ -168,7 +168,7 @@ The line color between current location and nearest store. Line drawn is 3px wid
 #### useTitleInInfoWindow ####
 
 *Default* `false`   
-*Expects* `boolean`
+*Expects* `boolean`   
 *Since* 0.6.0
 
 If the title should appear in the infoWindow of the marker's popup window.
@@ -314,6 +314,26 @@ Send all the coords to zoom in on a specific area of the map. Expects an object 
 		}
 	});
 
+#### showBounds ####
+
+*Expects* `object with ne, se and optionally a callback`
+
+Use the coordinates from the country data to set the bounds for the map or use your own.
+
+	$(selector).reppam('showOnMap', {
+		nw: {
+			lng: longitude,
+			lat: latitude
+		},
+		se: {
+			lng: longitude,
+			lat: latitude
+		},
+		callback: function(response) {
+			//Response is an object that returns true/false
+		}
+	});
+
 #### removeAllMarkers ####
 
 *Expects* `no options`
@@ -342,6 +362,9 @@ Removes all current markers, adds new markers based on whats set in `mapData`, c
 
 
 ### Changelog ###
+
+**Version 0.7.0**  
+New method to set map based on bounds.
 
 **Version 0.6.0**  
 Added option to have the title in the infoWindow.
