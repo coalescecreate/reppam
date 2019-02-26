@@ -1,12 +1,19 @@
 {
-  "name": "ys-reppam",
+  "name": "reppam",
   "version": "0.8.0",
   "description": "Reppam a mapping function used in conjuction with google maps API",
-  "main": "dist/reppam.js",
-  "homepage": "http://youngskilled.com",
-  "author": "richard@youngskilled.com Young/Skilled",
+  "main": "dist/js/reppam.min.js",
+  "style": "dist/css/reppam.min.css",
+  "homepage": "http://coalescecreate.com",
+  "author": "richard@coalescecreate.com - Coalesce Create",
   "license": "MIT",
-  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:coalescecreate/reppam.git"
+  },
+  "dependencies": {
+    "jquery": ">=1.8"
+  },
   "devDependencies": {
     "browser-sync": "^2.6.5",
     "gulp": "^3.8.1",
