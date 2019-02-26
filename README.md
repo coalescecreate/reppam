@@ -375,6 +375,9 @@ Triggers an event on the map selector for running methods once map is fully rend
 
 ### Changelog ###
 
+**Version 0.8.1**  
+Added support for NPM & modules
+
 **Version 0.8.0**  
 Added a loaded completion event.
 

@@ -1,6 +1,6 @@
 {
   "name": "reppam",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Reppam a mapping function used in conjuction with google maps API",
   "main": "dist/js/reppam.min.js",
   "style": "dist/css/reppam.min.css",
